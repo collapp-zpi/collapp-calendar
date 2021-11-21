@@ -5,6 +5,7 @@ import styled from "styled-components";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import classNames from "classnames";
+import { FiCalendar, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 dayjs.extend(weekOfYear)
 
 const WEEKDAYS = [
@@ -15,6 +16,21 @@ const WEEKDAYS = [
   "Fri",
   "Sat",
   "Sun",
+]
+
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
 ]
 
 function Plugin({ useWebsockets }) {
@@ -35,26 +51,59 @@ function Plugin({ useWebsockets }) {
       </div>
     )
 
+  const handlePrevMonth = () => {
+    if (month + 1 === 1) return setDate([year - 1, 11])
+    setDate([year, month - 1])
+  }
+
   const handleNextMonth = () => {
-    if (month + 1 === 12) return setDate([year + 1, 1])
+    if (month + 1 === 12) return setDate([year + 1, 0])
     setDate([year, month + 1])
   }
 
-  const handlePrevMonth = () => {
-    if (month + 1 === 1) return setDate([year - 1, 12])
-    setDate([year, month - 1])
+  const handleCurrentMonth = () => {
+    const date = new Date()
+    setDate([date.getFullYear(), date.getMonth()])
   }
-  console.log(calendar)
 
   return (
-    <div className="w-full h-full bg-gray-300 text-gray-500 text-center flex flex-col">
+    <div className="w-full h-full bg-blueGray-200 text-gray-500 flex flex-col">
+      <div className="flex p-3 justify-between items-center">
+        <div className="font-bold text-lg ml-3">
+          {MONTH_NAMES[month]} {year}
+        </div>
+        <div className="ml-2 space-x-1 flex text-2xl">
+          <button
+            className="w-8 h-8 bg-black bg-opacity-0 hover:bg-opacity-10 rounded-lg flex items-center justify-center cursor-pointer transition-colors"
+            onClick={handlePrevMonth}
+          >
+            <FiChevronLeft strokeWidth={3} />
+          </button>
+          <button
+            className={classNames(
+              "w-8 h-8 bg-black bg-opacity-0 hover:bg-opacity-10 rounded-lg flex items-center justify-center cursor-pointer transition-all",
+              month === new Date().getMonth() && "opacity-50 pointer-events-none",
+            )}
+            onClick={handleCurrentMonth}
+          >
+            <FiCalendar strokeWidth={3} className="text-xl" />
+          </button>
+          <button
+            className="w-8 h-8 bg-black bg-opacity-0 hover:bg-opacity-10 rounded-lg flex items-center justify-center cursor-pointer transition-colors"
+            onClick={handleNextMonth}
+          >
+            <FiChevronRight strokeWidth={3} />
+          </button>
+        </div>
+      </div>
+
       <CalendarContainer
         className="grid flex-grow"
-        style={{ gridTemplateRows: `2em repeat(${calendar.length}, 1fr)` }}
+        style={{ gridTemplateRows: `auto repeat(${calendar.length}, 1fr)` }}
       >
-        <div></div>
+        <div />
         {WEEKDAYS.map((day) => (
-          <div className="font-bold text-sm place-self-center" key={day}>
+          <div className="text-gray-400 font-bold text-xs place-self-center p-1" key={day}>
             {day}
           </div>
         ))}
@@ -65,10 +114,10 @@ function Plugin({ useWebsockets }) {
           {calendar.map(
             (week, weekI) => week.map((day, dayI) => (
               <div
-                className={classNames("text-xs p-2 border-gray-100", weekI && 'border-t', dayI && 'border-l')}
+                className={classNames("text-xs p-2 border-gray-100 flex flex-col", weekI && 'border-t', dayI && 'border-l')}
                 key={day.getTime()}
               >
-                {day.getDate()}
+                <div className="text-right">{day.getDate()}</div>
               </div>
             ))
           )}
@@ -76,7 +125,7 @@ function Plugin({ useWebsockets }) {
         {calendar.map(([date]) => {
           const weekNumber = dayjs(date).week()
           return (
-            <div className="font-bold text-xs place-self-center" key={weekNumber}>
+            <div className="text-gray-400 font-bold text-xs place-self-center p-1" key={weekNumber}>
               {weekNumber}
             </div>
           );
@@ -89,5 +138,5 @@ function Plugin({ useWebsockets }) {
 export default Plugin;
 
 const CalendarContainer = styled.div`
-  grid-template-columns: 2em repeat(7, 1fr);
+  grid-template-columns: auto repeat(7, 1fr);
 `
