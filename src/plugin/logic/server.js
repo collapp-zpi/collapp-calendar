@@ -1,7 +1,10 @@
-const set = (state, data) => {
+const add = (state, event) => {
   return {
     ...state,
-    arr: [...(state.arr || []), data.item],
+    events: [
+      ...(state.events || []),
+      event,
+    ],
   };
 };
 
@@ -11,7 +14,7 @@ const open = (state, data) => {
 
 //! Only functions added to events object will be avaliable to invoke on the server
 const events = {
-  set,
+  add,
   __OPEN: open,
 };
 

@@ -10,9 +10,10 @@ const CalendarContainer = styled.div`
   grid-template-columns: 1.5em repeat(7, 1fr);
 `
 
-export const CalendarView = ({ date, setDate }) => {
+export const CalendarView = ({ date, setDate, events }) => {
   const { year, month } = date
-  const today = new dayjs(`${year}-${month + 1}`)
+  const key = `${year}-${month + 1}`
+  const today = new dayjs(key)
 
   const calendar = useMemo(() => {
     return new Calendar(1).monthDates(year, month)
@@ -117,6 +118,16 @@ export const CalendarView = ({ date, setDate }) => {
                     )}
                   >
                     {day.getDate()}
+                  </div>
+                  <div className="flex-grow relative">
+                    <div className="overflow-hidden absolute w-full h-full left-0 top-0 flex flex-col">
+                      {(events?.[`${key}-${day.getDate()}`] ?? []).map(({ date, title }) => (
+                        <div key={date} className="text-xs flex">
+                          <div className="font-bold mr-1">{dayjs(date).utc().format('H:mm')}</div>
+                          <div className="flex-grow truncate">{title}</div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               );

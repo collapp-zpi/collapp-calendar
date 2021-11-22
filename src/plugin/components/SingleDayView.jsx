@@ -3,9 +3,10 @@ import classNames from "classnames";
 import { IoArrowBackSharp, IoArrowForwardSharp, IoArrowUpSharp, IoTodayOutline } from "react-icons/io5";
 import dayjs from "dayjs";
 
-export const SingleDayView = ({ date, setDate }) => {
+export const SingleDayView = ({ date, setDate, events, addEvent }) => {
   const { year, month, day } = date
-  const today = new dayjs(`${year}-${month + 1}-${day}`)
+  const key = `${year}-${month + 1}-${day}`
+  const today = new dayjs(key)
 
   const handlePrevDay = () => {
     const date = today.subtract(1, 'day')
@@ -40,6 +41,19 @@ export const SingleDayView = ({ date, setDate }) => {
       month,
     })
   }
+
+  const handleAddEvent = (e) => {
+    e.preventDefault()
+    const time = e.target.time.value
+    const title = e.target.title.value
+    const description = e.target.description.value
+
+    const date = dayjs(`${key} ${time}`).utc().format()
+    addEvent({ date, title, description })
+    e.target.reset()
+  }
+
+  const todayEvents = events?.[key] ?? []
 
   return (
     <>
@@ -79,6 +93,45 @@ export const SingleDayView = ({ date, setDate }) => {
             <IoArrowForwardSharp strokeWidth={2}/>
           </button>
         </div>
+      </div>
+      <div className="overflow-y-auto p-4 pb-8">
+        <div>
+          {todayEvents.map(({ date, title, description }) => (
+            <div key={date} className="flex flex-col p-6 rounded-3xl bg-white shadow-2xl mb-4">
+              <div className="font-bold">{dayjs(date).utc().format('H:mm')}</div>
+              <div className="font-bold text-xl">{title}</div>
+              <div className="text-xs">{description}</div>
+            </div>
+          ))}
+        </div>
+        <form onSubmit={handleAddEvent} className="rounded-3xl p-6 flex flex-col border-2 border-dashed border-blueGray-400 bg-blueGray-200">
+          <div className="flex mb-2">
+            <input
+              type="time"
+              name="time"
+              required
+              className="px-4 py-2 bg-blueGray-100 border border-blueGray-300 rounded-xl focus:outline-none"
+            />
+            <input
+              type="text"
+              name="title"
+              required
+              className="flex-grow ml-2 px-4 py-2 bg-blueGray-100 border border-blueGray-300 rounded-xl focus:outline-none"
+              placeholder="Title"
+            />
+          </div>
+          <textarea
+            name="description"
+            placeholder="Description..."
+            className="px-4 py-2 bg-blueGray-100 border border-blueGray-300 rounded-xl focus:outline-none"
+          />
+          <button
+            type="submit"
+            className="mt-2 ml-auto bg-blue-500 px-4 py-2 text-white rounded-lg focus:outline-none"
+          >
+            Save
+          </button>
+        </form>
       </div>
     </>
   )
