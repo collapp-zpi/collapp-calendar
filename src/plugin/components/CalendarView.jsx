@@ -123,7 +123,7 @@ export const CalendarView = ({ date, setDate, events }) => {
                     <div className="overflow-hidden absolute w-full h-full left-0 top-0 flex flex-col">
                       {(events?.[`${key}-${day.getDate()}`] ?? []).map(({ date, title }) => (
                         <div key={date} className="text-xs flex">
-                          <div className="font-bold mr-1">{dayjs(date).utc().format('H:mm')}</div>
+                          <div className="font-bold mr-1">{dayjs(date).format('H:mm')}</div>
                           <div className="flex-grow truncate">{title}</div>
                         </div>
                       ))}

@@ -21,7 +21,7 @@ function Plugin({ useWebsockets }) {
   const events = useMemo(() => {
     const events = {}
     for (const event of state?.events ?? []) {
-      const key = dayjs(event.date).utc().format('YYYY-MM-DD')
+      const key = dayjs(event.date).format('YYYY-MM-DD')
 
       if (!events?.[key]) events[key] = []
       events[key].push(event)

@@ -98,7 +98,7 @@ export const SingleDayView = ({ date, setDate, events, addEvent }) => {
         <div>
           {todayEvents.map(({ date, title, description }) => (
             <div key={date} className="flex flex-col p-6 rounded-3xl bg-white shadow-2xl mb-4">
-              <div className="font-bold">{dayjs(date).utc().format('H:mm')}</div>
+              <div className="font-bold">{dayjs(date).format('H:mm')}</div>
               <div className="font-bold text-xl">{title}</div>
               <div className="text-xs">{description}</div>
             </div>
