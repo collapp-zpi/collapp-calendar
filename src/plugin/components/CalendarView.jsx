@@ -121,8 +121,8 @@ export const CalendarView = ({ date, setDate, events }) => {
                   </div>
                   <div className="flex-grow relative">
                     <div className="overflow-hidden absolute w-full h-full left-0 top-0 flex flex-col">
-                      {(events?.[dayjs(day).format('YYYY-M-D')] ?? []).map(({ date, title }) => (
-                        <div key={date} className="text-xs flex">
+                      {(events?.[dayjs(day).format('YYYY-M-D')] ?? []).map(({ id, date, title }) => (
+                        <div key={id} className="text-xs flex">
                           <div className="font-bold mr-1">{dayjs(date).format('H:mm')}</div>
                           <div className="flex-grow truncate">{title}</div>
                         </div>

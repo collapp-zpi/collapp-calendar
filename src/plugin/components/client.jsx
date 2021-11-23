@@ -20,11 +20,15 @@ function Plugin({ useWebsockets }) {
 
   const events = useMemo(() => {
     const events = {}
-    for (const event of state?.events ?? []) {
+    for (const id in state?.events ?? {}) {
+      const event = state.events[id]
       const key = dayjs(event.date).format('YYYY-M-D')
 
       if (!events?.[key]) events[key] = []
-      events[key].push(event)
+      events[key].push({
+        id,
+        ...event,
+      })
     }
 
     for (const key in events)
@@ -40,13 +44,15 @@ function Plugin({ useWebsockets }) {
       </div>
     )
 
-  const addEvent = (event) => send('add', event)
+  const createEvent = (event) => send('create', event)
+  const updateEvent = (event) => send('update', event)
+  const removeEvent = (id) => send('remove', id)
 
   return (
     <div className="w-full h-full bg-blueGray-200 text-gray-500 flex flex-col">
       {date.day == null
         ? <CalendarView {...{ date, setDate, events }} />
-        : <SingleDayView {...{ date, setDate, events, addEvent }} />}
+        : <SingleDayView {...{ date, setDate, events, createEvent, updateEvent, removeEvent }} />}
     </div>
   );
 }
